@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import org.apache.tomcat.util.buf.StringCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +18,7 @@ public class UserController {
     private UserService userService;
     
     @GetMapping("/register")
-    public String gerRegistrationPage(@ModelAttribute ("user") UserDto userDto){
+    public String getRegistrationPage(@ModelAttribute ("user") UserDto userDto){
         return "users/register";
     }
     
@@ -28,6 +29,24 @@ public class UserController {
         userService.save(userDto);
         model.addAttribute("message", "Registered Successfully!");
         return "users/register";
+    }
+
+    @GetMapping("/login")
+    public String login( )
+    {
+        return "users/login";
+    }
+
+    @GetMapping("user-page")
+    public String userPage ()
+    {
+        return "userPage";
+    }
+
+    @GetMapping("admin-page")
+    public String adminPage()
+    {
+        return "adminPage";
     }
 }
 
