@@ -18,7 +18,7 @@ public class User {
     }
     
 
-    private String string; // what
+    // private String string; // what
 
     public User(String name, String password, String email, String role) {
         this.name = name;
@@ -31,13 +31,13 @@ public class User {
         return uid;
     }
 
-    public String getString() { // what
-        return string;
-    }
+    // public String getString() { // what
+    //     return string;
+    // }
 
-    public void setString(String string) { // what
-        this.string = string;
-    }
+    // public void setString(String string) { // what
+    //     this.string = string;
+    // }
     
     public void setUid(Integer uid) {
         this.uid = uid;

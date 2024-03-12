@@ -1,25 +1,35 @@
 package com.example.demo.controllers;
 
-import org.apache.tomcat.util.buf.StringCache;
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
 import com.example.demo.dto.UserDto;
 import com.example.demo.service.UserService;
+
+
+
+
 
 @Controller
 public class UserController {
     
     @Autowired
+    UserDetailsService userDetailsService;
+
+    @Autowired
     private UserService userService;
     
     @GetMapping("/register")
     public String getRegistrationPage(@ModelAttribute ("user") UserDto userDto){
-        return "users/register";
+        return "register";
     }
     
     
@@ -28,25 +38,28 @@ public class UserController {
     {
         userService.save(userDto);
         model.addAttribute("message", "Registered Successfully!");
-        return "users/register";
+        return "registerSuccess";
     }
 
     @GetMapping("/login")
-    public String login( )
+    public String login()
     {
-        return "users/login";
+        return "login";
     }
 
-    @GetMapping("user-page")
-    public String userPage ()
-    {
-        return "userPage";
-    }
+	@GetMapping("user-page")
+	public String userPage (Model model, Principal principal) {
+		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+		model.addAttribute("user", userDetails);
+		return "user";
+	}
+	
+	@GetMapping("admin-page")
+	public String adminPage (Model model, Principal principal) {
+		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+		model.addAttribute("user", userDetails);
+		return "admin";
+	}
 
-    @GetMapping("admin-page")
-    public String adminPage()
-    {
-        return "adminPage";
-    }
+
 }
-

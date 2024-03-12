@@ -12,7 +12,7 @@ public class UserDto {
         this.name = name;
         this.password = password;
         this.email = email;
-        this.role = role;
+        this.role = "USER";
     }
 
     public String getName() {
