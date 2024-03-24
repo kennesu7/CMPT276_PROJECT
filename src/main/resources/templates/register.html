@@ -9,7 +9,22 @@
     
 </head>
 <body>
+	<!--Nav bar-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">AdventureUs</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="d-flex">
+                <a href="login" class="btn btn-outline-light me-2">Sign In</a>
+                <a href="register" class="btn btn-outline-light">Register</a>
+            </div>
+        </div>
+    </nav>
 
+	<!--main section-->
 	<div class="container-fluid">
 		<div class="row justify-content-center">
 			<div class="col-md-4">
@@ -17,21 +32,18 @@
 				<form method="post" th:action="@{/register}" th:object="${user}" >
                     
 					<div class="mb-3">
-						
-						<input th:field="*{name}"type="text" id="name" name="name" class="form-control form-control-lg"
-                            placeholder="Name">
+						<label for="name" class="form-label">Name:</label>
+						<input th:field="*{name}"type="text" id="name" name="name" class="form-control" placeholder="Enter a name">
 					</div>
 
 					<div class="mb-3">
-						
-						<input th:field="*{email}" type="email" id="email" name="email" class="form-control form-control-lg"
-                            placeholder="email">
+						<label for="email" class="form-label">Email:</label>
+						<input th:field="*{email}" type="email" id="email" name="email" class="form-control" placeholder="Enter an email">
 					</div>
 
 					<div class="mb-3">
-						
-						<input th:field="*{password}" type="password" id="password" name="password" class="form-control form-control-lg"
-                            placeholder="Password">
+						<label for="password" class="form-label">Password:</label>
+						<input th:field="*{password}" type="password" id="password" name="password" class="form-control" placeholder="Enter a password">
 					</div>
                     
                     <div class="d-grid gap-2">

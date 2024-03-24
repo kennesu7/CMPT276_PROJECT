@@ -18,41 +18,40 @@ import com.example.demo.service.CustomUserDetailService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    CustomSuccessHandler customSuccessHandler;
+    private final CustomSuccessHandler customSuccessHandler;
+    private final CustomUserDetailService customUserDetailService;
 
-    @Autowired
-    CustomUserDetailService customUserDetailService;
+    public SecurityConfig(CustomSuccessHandler customSuccessHandler, CustomUserDetailService customUserDetailService) {
+        this.customSuccessHandler = customSuccessHandler;
+        this.customUserDetailService = customUserDetailService;
+    }
 
     @Bean
-    public static PasswordEncoder passwordEncoder()
-    {
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-		
-	http.csrf(c -> c.disable())
-		
-	.authorizeHttpRequests(request -> request.requestMatchers("/admin-page")
-			.hasAuthority("ADMIN").requestMatchers("/user-page").hasAuthority("USER")
-			.requestMatchers("/register").permitAll()
-			.anyRequest().authenticated())
-		
-	.formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login")
-			.successHandler(customSuccessHandler).permitAll())
-		
-	.logout(form -> form.invalidateHttpSession(true).clearAuthentication(true)
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-			.logoutSuccessUrl("/login?logout").permitAll());
-		
-	return http.build();
-		
-}
-	
-	@Autowired
-	public void configure (AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
-	}
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(c -> c.disable())
+            .authorizeHttpRequests(request -> request
+				.requestMatchers("/home.html").permitAll()
+                .requestMatchers("/admin-page").hasAuthority("ADMIN")
+                .requestMatchers("/user-page").hasAuthority("USER")
+                .requestMatchers("/register").permitAll()
+                .anyRequest().authenticated())
+			.formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login")
+				.successHandler(customSuccessHandler).permitAll())
+            .logout(logout -> logout
+                .invalidateHttpSession(true).clearAuthentication(true)
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout").permitAll());
+        return http.build();
+    }
+
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
+    }
 }
 
