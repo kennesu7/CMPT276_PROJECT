@@ -36,7 +36,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 		
 	.authorizeHttpRequests(request -> request.requestMatchers("/admin-page")
 			.hasAuthority("ADMIN").requestMatchers("/user-page").hasAuthority("USER")
-			.requestMatchers("/register").permitAll()
+			.requestMatchers("/register", "/home").permitAll()
 			.anyRequest().authenticated())
 		
 	.formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login")
