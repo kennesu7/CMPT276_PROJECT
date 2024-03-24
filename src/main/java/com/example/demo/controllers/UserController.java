@@ -26,6 +26,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("/home")
+    public String home()
+    {
+        return "home";
+    }
     
     @GetMapping("/register")
     public String getRegistrationPage(@ModelAttribute ("user") UserDto userDto){
