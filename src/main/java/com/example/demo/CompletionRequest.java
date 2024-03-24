@@ -2,7 +2,7 @@ package com.example.demo;
 
 import java.util.List;
 
-public record CompletionRequest(String model, List<Message> messages, int max_tokens,Double temperature) {
+public record CompletionRequest(String model, List<Message> messages, int max_tokens, Double temperature) {
 
     public static CompletionRequest defaultWith(String userInput, int max_tokens, Double temperature) {
         Message systemMessage = new Message("system", "Generate an itinerary for my visit to the specified city.");
