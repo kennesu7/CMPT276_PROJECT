@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class ChatGptController {
 	
-	private static final String MAIN_PAGE = "chat";
+	private static final String MAIN_PAGE = "schedule";
 	
 	@GetMapping(path = "/chat")
 	public String index() {
@@ -64,7 +64,7 @@ public String chat(Model model, @ModelAttribute ChatMessageDTO dto) {
 	
 	
 	@Autowired private ObjectMapper jsonMapper;
-	 private String openaiApiKey ="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";
+    @Value("${openai.api_key}") private String openaiApiKey;
 	private HttpClient client = HttpClient.newHttpClient();
 	private static final URI CHATGPT_URI = URI.create("https://api.openai.com/v1/chat/completions");
 	
