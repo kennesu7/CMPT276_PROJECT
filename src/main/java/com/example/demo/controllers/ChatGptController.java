@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class ChatGptController {
 	
-	private static final String MAIN_PAGE = "index";
+	private static final String MAIN_PAGE = "chat";
 	
 	@GetMapping(path = "/chat")
 	public String index() {
