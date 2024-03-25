@@ -64,6 +64,7 @@ public String chat(Model model, @ModelAttribute ChatMessageDTO dto) {
 
 		Itinerary itinerary = new Itinerary(user, generatedItinerary);
         ItineraryRepository.save(itinerary);
+		
         model.addAttribute("request", city); // Set the cleaned city name
         model.addAttribute("response", generatedItinerary);
     } catch (Exception e) {
