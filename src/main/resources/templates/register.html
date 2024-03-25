@@ -28,6 +28,7 @@
 	<div class="container-fluid">
 		<div class="row justify-content-center">
 			<div class="col-md-4">
+				<!-- <a href="/home"><button class="btn btn-danger">Home</button></a>  -->
 				<h1 class="text-center mt-5 mb-4">Register</h1>
 				<form method="post" th:action="@{/register}" th:object="${user}" >
                     
@@ -49,8 +50,11 @@
                     <div class="d-grid gap-2">
                         <input class="btn btn-primary" type="submit" value="Register"></input>
                     </div>
+
+
                     
 				</form>
+				<p class="text-center">Already have an account? <a href="/login">Login</a></p>
 			</div>
 		</div>
 	</div>

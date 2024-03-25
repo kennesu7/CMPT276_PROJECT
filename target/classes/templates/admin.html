@@ -35,6 +35,10 @@
         h2 {
             color: #45b6fe;
         }
+
+        #button{
+            color: white;
+        }
         
     </style>
 </head>
@@ -46,7 +50,7 @@
         <h2>Welcome, [[${user.getName()}]]</h2>
         
         <span sec:authorize="isAuthenticated">
-        <a th:href="@{/logout}">
+        <a id = "button" th:href="@{/logout}">
          Logout
         
         </a>

@@ -32,26 +32,29 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(c -> c.disable())
-            .authorizeHttpRequests(request -> request
-				.requestMatchers("/home.html").permitAll()
-                .requestMatchers("/admin-page").hasAuthority("ADMIN")
-                .requestMatchers("/user-page").hasAuthority("USER")
-                .requestMatchers("/register").permitAll()
-                .anyRequest().authenticated())
-			.formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login")
-				.successHandler(customSuccessHandler).permitAll())
-            .logout(logout -> logout
-                .invalidateHttpSession(true).clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout").permitAll());
-        return http.build();
-    }
-
-    @Autowired
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
-    }
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+		
+	http.csrf(c -> c.disable())
+		
+	.authorizeHttpRequests(request -> request.requestMatchers("/admin-page")
+			.hasAuthority("ADMIN").requestMatchers("/user-page").hasAuthority("USER")
+			.requestMatchers("/register").permitAll()
+			.anyRequest().authenticated())
+		
+	.formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login")
+			.successHandler(customSuccessHandler).permitAll())
+		
+	.logout(form -> form.invalidateHttpSession(true).clearAuthentication(true)
+			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+			.logoutSuccessUrl("/login?logout").permitAll());
+		
+	return http.build();
+		
+}
+	
+	@Autowired
+	public void configure (AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
+	}
 }
 
