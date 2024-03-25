@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,14 +23,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example.demo.CompletionResponse;
 import com.example.demo.CompletionRequest;
 import com.example.demo.dto.ChatMessageDTO;
-
-
+import com.example.demo.models.Itinerary;
+import com.example.demo.models.ItineraryRepository;
+import com.example.demo.models.User;
+import com.example.demo.models.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class ChatGptController {
-	
+
+	@Autowired // not originally added
+	private final ItineraryRepository ItineraryRepository;
+	@Autowired // not originally added delete if need
+    private final UserRepository UserRepository;
+
+	//@AutoWired was here originally
+    public ChatGptController(ItineraryRepository itineraryRepository, UserRepository userRepository) {
+        this.ItineraryRepository = itineraryRepository;
+        this.UserRepository = userRepository;
+    }
 	private static final String MAIN_PAGE = "schedule";
 	
 	@GetMapping(path = "/chat")
@@ -39,20 +53,25 @@ public class ChatGptController {
 	@PostMapping(path = "/chat")
 public String chat(Model model, @ModelAttribute ChatMessageDTO dto) {
     try {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        User user = UserRepository.findByEmail(userEmail);
+
         String city = dto.city().trim().replaceAll(",+$", ""); // Remove any trailing commas
         List<String> genres = dto.genre(); // Get the genres list
         String message = buildMessage(city, genres);
+		String generatedItinerary = chatWithGpt3(message);
+
+		Itinerary itinerary = new Itinerary(user, generatedItinerary);
+        ItineraryRepository.save(itinerary);
         model.addAttribute("request", city); // Set the cleaned city name
-        model.addAttribute("response", chatWithGpt3(message));
+        model.addAttribute("response", generatedItinerary);
     } catch (Exception e) {
         e.printStackTrace();
         model.addAttribute("response", "Error in communication with OpenAI ChatGPT API: " + e.getMessage());
     }
     return MAIN_PAGE;
 }
-
-
-
 
 
 	private String buildMessage(String city, List<String> genres) {
