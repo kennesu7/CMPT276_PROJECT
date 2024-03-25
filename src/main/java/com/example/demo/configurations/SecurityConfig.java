@@ -18,17 +18,19 @@ import com.example.demo.service.CustomUserDetailService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    CustomSuccessHandler customSuccessHandler;
+    private final CustomSuccessHandler customSuccessHandler;
+    private final CustomUserDetailService customUserDetailService;
 
-    @Autowired
-    CustomUserDetailService customUserDetailService;
+    public SecurityConfig(CustomSuccessHandler customSuccessHandler, CustomUserDetailService customUserDetailService) {
+        this.customSuccessHandler = customSuccessHandler;
+        this.customUserDetailService = customUserDetailService;
+    }
 
     @Bean
-    public static PasswordEncoder passwordEncoder()
-    {
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		
