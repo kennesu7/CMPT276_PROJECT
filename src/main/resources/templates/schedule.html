@@ -36,7 +36,7 @@
 			    </fieldset>
 			</form>
 			<h2 th:if="${response != null}">ChatGPT responded with:</h2>
-			<p th:if="${response != null}" th:text="${response}"></p>
+			<pre th:if="${response != null}" th:text="${response}"></pre>
 		</div>
 	</main>
 </body>

@@ -7,24 +7,24 @@ import jakarta.persistence.*;
 public class Itinerary {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private int uid;
     
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
     
-    @Column(name="itinerary")
+    @Column(name="itinerary", length=100000000)
     private String itinerary; // The generated itinerary string
 
     // Constructors, getters, and setters
     public Itinerary() {}
 
-    public Integer getId() {
-        return id;
+    public int getUid() {
+        return uid;
     }
 
-    public void setId(Integer uid) {
-        this.id = uid;
+    public void setId(int uid) {
+        this.uid = uid;
     }
 
     public User getUser() {
