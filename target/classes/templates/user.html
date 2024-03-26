@@ -129,6 +129,19 @@
     <div class="container"> 
     <a href="/chat" class="btn btn-outline-light">Create Your Itinerary Now</a>
 </div>
+<div class="container">
+    <h2>All Itinerary:</h2>
+    <table border="1">
+        <tr>
+            <th>Itinerary ID</th>
+            <th>Itinerary</th>
+        </tr>
+        <tr th:each="it, stat : ${itinerary}">
+            <td><pre th:text="${stat.index + 1}"></pre></td>
+            <td><pre th:text="${it.itinerary}"></pre></td>
+        </tr>
+    </table>
+</div>
 
     
 </body>

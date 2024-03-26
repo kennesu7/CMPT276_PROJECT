@@ -12,6 +12,8 @@ public class Itinerary {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    private String email;
     
     @Column(name="itinerary", length=100000000)
     private String itinerary; // The generated itinerary string
@@ -39,12 +41,21 @@ public class Itinerary {
         return itinerary;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setItinerary(String itinerary) {
         this.itinerary = itinerary;
     }
 
-    public Itinerary(User user, String itinerary) {
+    public Itinerary(User user, String email, String itinerary) {
         this.user = user;
+        this.email = email;
         this.itinerary = itinerary;
     }
 }

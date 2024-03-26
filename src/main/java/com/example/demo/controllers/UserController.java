@@ -9,11 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import com.example.demo.dto.UserDto;
 import com.example.demo.models.User;
 import com.example.demo.models.UserRepository;
 import com.example.demo.service.UserService;
+import com.example.demo.models.ItineraryRepository;
+import com.example.demo.models.Itinerary;
 
 
 
@@ -31,6 +34,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private ItineraryRepository itineraryRepo;
 
     @GetMapping("/home")
     public String home()
@@ -58,19 +64,22 @@ public class UserController {
         return "login";
     }
 
-	@GetMapping("user-page")
-	public String userPage (Model model, Principal principal) {
-		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
-		model.addAttribute("user", userDetails);
-		return "user";
-	}
+@GetMapping("user-page")
+public String userPage (Model model, Principal principal) { //@RequestParam(name = "uid") int uid,
+    UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+    model.addAttribute("user", userDetails);
+
+    List<Itinerary> itineraries = itineraryRepo.findAllByEmail(principal.getName());
+    model.addAttribute("itinerary", itineraries);
+
+    return "user";
+}
 
 
 	@GetMapping("admin-page")
 	public String adminPage (Model model, Principal principal) {
 		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
 		model.addAttribute("user", userDetails);
-
 
         List<User> users = userRepo.findAll();
         model.addAttribute("users", users);

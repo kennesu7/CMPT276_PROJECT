@@ -56,13 +56,13 @@ public String chat(Model model, @ModelAttribute ChatMessageDTO dto) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
         User user = UserRepository.findByEmail(userEmail);
-
+		String email = UserRepository.findByEmail(userEmail).getEmail();
         String city = dto.city().trim().replaceAll(",+$", ""); // Remove any trailing commas
         List<String> genres = dto.genre(); // Get the genres list
         String message = buildMessage(city, genres);
 		String generatedItinerary = chatWithGpt3(message);
 
-		Itinerary itinerary = new Itinerary(user, generatedItinerary);
+		Itinerary itinerary = new Itinerary(user, email, generatedItinerary);
         ItineraryRepository.save(itinerary);
 		
         model.addAttribute("request", city); // Set the cleaned city name
