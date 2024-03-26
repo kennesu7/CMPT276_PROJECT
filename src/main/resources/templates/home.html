@@ -14,31 +14,44 @@
             padding: 0;
         }
 
-        h1 {
+        h1{
+            text-align: center; 
+            font-size: 2em; 
+            color: #ffffff; 
+            margin-top: 20px; 
+        }
+
+        h2 {
             color: white;
         }
+        
+
         .btn-primary {
             padding: 12px 24px; /* Adjust the padding as needed */
         }
         
-        .hero-image {
-           position: relative;
-           top: 50px;
-           left: -200px;
-        }
+        body{
+    background-image: url('https://media3.giphy.com/media/JSjVUhKot7GfyP5cUZ/giphy.gif?cid=790b761197tq6tec61r7n9dy2rki06uoz464v0uuul1n5a0a&ep=v1_gifs_search&rid=giphy.gif&ct=g');
+    background-size: cover;
+}
         
     </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/home">AdventureUs</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>  
+    </nav>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-4 text-center" >
-                <h1 class="mt-5 mb-4">Get started</h1>
+                <h2 class="mt-5 mb-4">Get started</h2>
                 <a href="/register"><button class="btn btn-primary">Register</button></a> 
                 <a href="/login"><button class="btn btn-primary ">Login</button></a> 
-                <br>
-                <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d25b8838-dabc-4aa2-9600-8d17a2118fde/ddnzy1q-3a13bbe5-358e-47bf-aa4f-bc1ad414ff6d.png/v1/fill/w_1039,h_769,q_70,strp/one_piece_world_map_by_sharpsider_ddnzy1q-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NDM4MCIsInBhdGgiOiJcL2ZcL2QyNWI4ODM4LWRhYmMtNGFhMi05NjAwLThkMTdhMjExOGZkZVwvZGRuenkxcS0zYTEzYmJlNS0zNThlLTQ3YmYtYWE0Zi1iYzFhZDQxNGZmNmQucG5nIiwid2lkdGgiOiI8PTU5MTUifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.BwwOKboNr1dkqfITDxZDuReE0AG85UTj1DX8wZrM4V0" 
-                class="hero-image" th:width = "839" th:height = "569">
 
             </div>
         </div>
