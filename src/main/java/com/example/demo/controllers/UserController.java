@@ -83,6 +83,11 @@ public String userPage (Model model, Principal principal) { //@RequestParam(name
 
         List<User> users = userRepo.findAll();
         model.addAttribute("users", users);
+
+        
+        List<Itinerary> itineraries = itineraryRepo.findAllByEmail(principal.getName());
+        model.addAttribute("itinerary", itineraries);
+
 		return "admin";
 	}
     
