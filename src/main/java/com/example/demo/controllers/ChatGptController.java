@@ -6,6 +6,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.util.List;
+import java.util.Optional;
 import java.net.http.HttpResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import com.example.demo.models.Itinerary;
 import com.example.demo.models.ItineraryRepository;
 import com.example.demo.models.User;
 import com.example.demo.models.UserRepository;
+import com.example.demo.service.WeatherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,10 +40,15 @@ public class ChatGptController {
 	@Autowired // not originally added delete if need
     private final UserRepository UserRepository;
 
+	@Autowired
+	private final WeatherService weatherService;
+
+
 	//@AutoWired was here originally
-    public ChatGptController(ItineraryRepository itineraryRepository, UserRepository userRepository) {
+    public ChatGptController(ItineraryRepository itineraryRepository, UserRepository userRepository, WeatherService weatherService) {
         this.ItineraryRepository = itineraryRepository;
         this.UserRepository = userRepository;
+		this.weatherService = weatherService;
     }
 	private static final String MAIN_PAGE = "schedule";
 	
@@ -51,34 +58,56 @@ public class ChatGptController {
 	}
 	
 	@PostMapping(path = "/chat")
-public String chat(Model model, @ModelAttribute ChatMessageDTO dto) {
-    try {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-        User user = UserRepository.findByEmail(userEmail);
-		String email = UserRepository.findByEmail(userEmail).getEmail();
-        String city = dto.city().trim().replaceAll(",+$", ""); // Remove any trailing commas
-        List<String> genres = dto.genre(); // Get the genres list
-        String message = buildMessage(city, genres);
-		String generatedItinerary = chatWithGpt3(message);
+	public String chat(Model model, @ModelAttribute ChatMessageDTO dto) {
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String userEmail = authentication.getName();
+			User user = UserRepository.findByEmail(userEmail);
+			String email = UserRepository.findByEmail(userEmail).getEmail();
+			String city = dto.city().trim().replaceAll(",+$", ""); // Remove any trailing commas
+			List<String> genres = dto.genre(); // Get the genres list
+			
+			Optional<String> weatherDataOptional = weatherService.getWeather(city);
+        	String weatherData = "Weather data not available";
+        	if (weatherDataOptional.isPresent()) {
+            // Extract only the "Current weather" part of the weather information
+            weatherData = weatherDataOptional.map(data -> {
+                // Assuming the format is "Current weather: ..., Temperature: ...°C"
+                	String[] parts = data.split(", ");
+                	return parts[0]; // This will be "Current weather: ..."
+            	}).orElse("Weather data not available");
+        	}
 
-		Itinerary itinerary = new Itinerary(user, email, generatedItinerary);
-        ItineraryRepository.save(itinerary);
-		
-        model.addAttribute("request", city); // Set the cleaned city name
-        model.addAttribute("response", generatedItinerary);
-    } catch (Exception e) {
-        e.printStackTrace();
-        model.addAttribute("response", "Error in communication with OpenAI ChatGPT API: " + e.getMessage());
-    }
-    return MAIN_PAGE;
-}
+        	// Include the weather data in the model
+        	model.addAttribute("weather", weatherData);
+			
+			if(weatherData != null){
+				//include the weather data in the message
+				String message = buildMessage(city, genres, weatherData);
+				String generatedItinerary = chatWithGpt3(message);
+
+				
+				Itinerary itinerary = new Itinerary(user, email, generatedItinerary);
+				ItineraryRepository.save(itinerary);
+
+				
+				model.addAttribute("request", city); // Set the cleaned city name
+				model.addAttribute("response", generatedItinerary);
+			} else { 
+				model.addAttribute("response", "Error getching weather data for " + city);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("response", "Error in communication with OpenAI ChatGPT API: " + e.getMessage());
+		}
+		return MAIN_PAGE;
+	}
 
 
-	private String buildMessage(String city, List<String> genres) {
+	private String buildMessage(String city, List<String> genres, String weatherData) {
 		String interest = (genres != null && !genres.isEmpty()) ? "I am interested in " + String.join(", ", genres) : "";
 		city = city != null ? city.trim().replaceAll(",$", "") : "";
-		return String.format("%s, %s", city, interest).trim();
+		return String.format("%s, %s, Weather condition is: %s", city, interest, weatherData).trim();
 	}
 
 	

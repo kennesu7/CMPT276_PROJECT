@@ -15,7 +15,7 @@ public class Itinerary {
 
     private String email;
     
-    @Column(name="itinerary", length=100000000)
+    @Column(name="itinerary", length=1000000000)
     private String itinerary; // The generated itinerary string
 
     // Constructors, getters, and setters
