@@ -8,6 +8,9 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.util.List;
 import java.util.Optional;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +34,9 @@ import com.example.demo.models.UserRepository;
 import com.example.demo.service.WeatherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 public class ChatGptController {
@@ -56,6 +62,13 @@ public class ChatGptController {
 	public String index() {
 		return MAIN_PAGE;
 	}
+	
+	@GetMapping("/map")
+	public String map(Model model){
+
+			return "mapTest";
+	}
+	
 	
 	@PostMapping(path = "/chat")
 	public String chat(Model model, @ModelAttribute ChatMessageDTO dto) {
@@ -85,12 +98,14 @@ public class ChatGptController {
 				//include the weather data in the message
 				String message = buildMessage(city, genres, weatherData);
 				String generatedItinerary = chatWithGpt3(message);
+				ArrayList<String> city_list=extractPlaceNames(generatedItinerary);
+				
 
 				
 				Itinerary itinerary = new Itinerary(user, email, generatedItinerary);
 				ItineraryRepository.save(itinerary);
-
-				
+				model.addAttribute("centerCity",city);
+				model.addAttribute("cities",city_list);
 				model.addAttribute("request", city); // Set the cleaned city name
 				model.addAttribute("response", generatedItinerary);
 			} else { 
@@ -100,7 +115,7 @@ public class ChatGptController {
 			e.printStackTrace();
 			model.addAttribute("response", "Error in communication with OpenAI ChatGPT API: " + e.getMessage());
 		}
-		return MAIN_PAGE;
+		return MAIN_PAGE; //
 	}
 
 
@@ -120,7 +135,7 @@ public class ChatGptController {
 	private String chatWithGpt3(String message) throws Exception {
 		// Hardcoded max tokens and temperature values.
 		int maxTokens = 300;
-		double temperature = 0.7; // Set your desired temperature value here
+		double temperature = 0.2; // Set your desired temperature value here
 	
 		var request = HttpRequest.newBuilder()
 				.uri(CHATGPT_URI)
@@ -138,5 +153,23 @@ public class ChatGptController {
 		var completion = CompletionRequest.defaultWith(message, maxTokens, temperature); 
 		return BodyPublishers.ofString(jsonMapper.writeValueAsString(completion));
 	}
+
+	
+
+	public ArrayList<String> extractPlaceNames(String responseText) {
+		// Regex pattern to match any text enclosed in quotation marks
+		Pattern pattern = Pattern.compile("\"([^\"]+)\"");
+		Matcher matcher = pattern.matcher(responseText);
+	
+		ArrayList<String> placeNames = new ArrayList<>();
+	
+		while (matcher.find()) {
+			// Add the text found within quotation marks to the list
+			placeNames.add(matcher.group(1).trim());
+		}
+	
+		return placeNames;
+	}
+    
 	
 }

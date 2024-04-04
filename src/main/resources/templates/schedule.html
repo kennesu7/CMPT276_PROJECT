@@ -5,9 +5,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<title>ChatGPT & Spring demo</title>
 	<link rel="stylesheet" th:href="@{/css/main.css}" />
+
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAg-sV3lEj7XR_0nqAeCcg9Q6mITu8-xU&callback=initMap" async defer></script>
+
+	
+
 </head>
 <style>
+	#map {
+  height: 100%;
+	}
+
 	body {
+	height: 100%;
 	font-family: Arial, sans-serif;
 	margin: 0;
 	padding: 0;
@@ -56,7 +66,9 @@
 
 	
 </style>
+
 <body>
+	
 	<main role="main" class="container">
 		<div class="starter-template">
 			<a href="/user-page" class="btn btn-outline-light">Back to User Page</a>
@@ -64,7 +76,7 @@
 			<form th:action="@{/chat}" method="post">
 				<fieldset>
 					<div class="form-group">
-						<input type="text" name="city" placeholder="Enter a city" th:value="${request}" required autofocus/>
+						<input type="text" name="city" id="capital_city" placeholder="Enter a city" th:value="${request}" required autofocus/>
 					</div>
 					<div>
 						<input type="checkbox" id="sports" name="genres[]" value="sports">
@@ -87,8 +99,51 @@
 			<h2 th:if="${response != null}">ChatGPT responded with:</h2>
 			<h4 th:if="${weather != null}" th:text="${weather}"></h4>
 			<pre th:if="${response != null}" th:text="${response}"></pre>
-		</div>
+			<div th:if="${not #lists.isEmpty(cities)}">
+				<h2>Places to Visit</h2>
+				<ul>
+					<li th:each="city : ${cities}">
+						<span class = "place" th:text="${city}"></span>
+					</li>
+				</ul>
+			</div>
+
+			
+			<div id="map" style="height: 400px; width: 100%;"></div>
+			<script th:inline="javascript">
+				/*<![CDATA[*/
+				function initMap() {
+					// Use the first city in the list for centering the map
+					const mapCenter = { lat: 43.6532, lng: -79.3832 }; // Default coordinates (Toronto)
+					const map = new google.maps.Map(document.getElementById('map'), {
+						zoom: 12,
+						center: mapCenter
+					});
+	
+					const places = /*[[${cities}]]*/ [];
+					const geocoder = new google.maps.Geocoder();
+	
+					// Geocode each place and add a marker
+					places.forEach((place) => {
+						geocoder.geocode({ 'address': place }, (results, status) => {
+							if (status === 'OK') {
+								new google.maps.Marker({
+									map: map,
+									position: results[0].geometry.location,
+									title: place
+								});
+							} else {
+								console.error('Geocode was not successful for the following reason: ' + status);
+							}
+						});
+					});
+				}
+				/*]]>*/
+			</script>
+
+			
 	</main>
 	
+
 </body>
 </html>
