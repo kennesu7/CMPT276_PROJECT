@@ -6,7 +6,7 @@
 	<title>ChatGPT & Spring demo</title>
 	<link rel="stylesheet" th:href="@{/css/main.css}" />
 
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAg-sV3lEj7XR_0nqAeCcg9Q6mITu8-xU&callback=initMap" async defer></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxTT3ZbFCv9MQjcDEduMmS-xlFTGZgUSg&callback=initMap" async defer></script>
 
 	
 
@@ -107,35 +107,54 @@
 					</li>
 				</ul>
 			</div>
+			
 
 			
 			<div id="map" style="height: 400px; width: 100%;"></div>
 			<script th:inline="javascript">
 				/*<![CDATA[*/
 				function initMap() {
-					// Use the first city in the list for centering the map
-					const mapCenter = { lat: 43.6532, lng: -79.3832 }; // Default coordinates (Toronto)
-					const map = new google.maps.Map(document.getElementById('map'), {
-						zoom: 12,
-						center: mapCenter
-					});
-	
-					const places = /*[[${cities}]]*/ [];
+					var centerCity = /*[[${request}]]*/ 'Default City';
 					const geocoder = new google.maps.Geocoder();
-	
-					// Geocode each place and add a marker
-					places.forEach((place) => {
-						geocoder.geocode({ 'address': place }, (results, status) => {
-							if (status === 'OK') {
-								new google.maps.Marker({
-									map: map,
-									position: results[0].geometry.location,
-									title: place
+					
+					// Start by geocoding the centerCity to get its coordinates
+					geocoder.geocode({ 'address': centerCity }, function(centerResults, status) {
+						if (status === 'OK') {
+							// If geocoding is successful, set the center of the map to the city's coordinates
+							const mapCenter = centerResults[0].geometry.location;
+							const map = new google.maps.Map(document.getElementById('map'), {
+								zoom: 12,
+								center: mapCenter
+							});
+				
+							// Now, add a marker for the center city
+							new google.maps.Marker({
+								map: map,
+								position: mapCenter,
+								title: centerCity
+							});
+				
+							// Next, geocode each place in the list and add a marker
+							const places = /*[[${cities}]]*/ [];
+							places.forEach((place) => {
+								geocoder.geocode({ 'address': place }, (placeResults, placeStatus) => {
+									if (placeStatus === 'OK') {
+										// For each place, add a marker at its geocoded location
+										new google.maps.Marker({
+											map: map,
+											position: placeResults[0].geometry.location,
+											title: place
+										});
+									} else {
+										console.error(`Geocode was not successful for ${place} due to: ` + placeStatus);
+									}
 								});
-							} else {
-								console.error('Geocode was not successful for the following reason: ' + status);
-							}
-						});
+							});
+				
+						} else {
+							// If geocoding the center city is not successful, log an error
+							console.error(`Geocode was not successful for the center city due to: ` + status);
+						}
 					});
 				}
 				/*]]>*/
