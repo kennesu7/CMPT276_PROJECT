@@ -71,8 +71,8 @@
 	
 	<main role="main" class="container">
 		<div class="starter-template">
-			<a href="/user-page" class="btn btn-outline-light">Back to User Page</a>
-			<h2>Send message to ChatGPT</h2>
+			<a href="#" id='backButton' class="btn btn-outline-light">Back to Dashboard</a>
+			<h2>Send message to AdventureUs</h2>
 			<form th:action="@{/chat}" method="post">
 				<fieldset>
 					<div class="form-group">
@@ -96,7 +96,7 @@
 					</div>
 				</fieldset>
 			</form>
-			<h2 th:if="${response != null}">ChatGPT responded with:</h2>
+			<h2 th:if="${response != null}">AdventureUs responded with:</h2>
 			<h4 th:if="${weather != null}" th:text="${weather}"></h4>
 			<pre th:if="${response != null}" th:text="${response}"></pre>
 			<div th:if="${not #lists.isEmpty(cities)}">
@@ -162,7 +162,22 @@
 
 			
 	</main>
+	<script>
+		// Retrieve user role from session storage
+		let userRole = sessionStorage.getItem('userRole');
 	
+		// Add event listener to the button
+		document.getElementById('backButton').addEventListener('click', function(event) {
+			event.preventDefault(); // Prevent default anchor behavior
+	
+			// Redirect based on user's role
+			if (userRole === 'user') {
+				window.location.href = '/user-page'; 
+			} else if (userRole === 'admin') {
+				window.location.href = '/admin-page'; 
+			}
+		});
+	</script>
 
 </body>
 </html>
