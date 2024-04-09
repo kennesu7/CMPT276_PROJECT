@@ -6,5 +6,6 @@ import com.example.demo.dto.UserDto;
 public interface UserService {
 
     User save (UserDto userDto);
-   
+    User updateUser (UserDto userDto);
+    
 } 

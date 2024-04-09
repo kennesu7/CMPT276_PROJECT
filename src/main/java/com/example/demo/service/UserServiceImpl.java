@@ -22,6 +22,21 @@ public class UserServiceImpl implements UserService{
         User user = new User(userDto.getName(),  passwordEncoder.encode(userDto.getPassword()),  userDto.getEmail(), userDto.getRole());
         return userRepository.save(user);
     }
+
+    @Override
+    public User updateUser(UserDto userDto){
+        User user = userRepository.findByEmail(userDto.getEmail());
+        if (user != null){
+        user.setName(userDto.getName());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setEmail(userDto.getEmail());
+        return userRepository.save(user); 
+        }
+        else{
+            throw new RuntimeException("User not found with email: " + userDto.getEmail());
+        }
+        
+    }
     
     
 }

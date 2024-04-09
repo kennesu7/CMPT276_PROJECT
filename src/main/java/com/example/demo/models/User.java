@@ -18,7 +18,6 @@ public class User {
     }
     
 
-    // private String string; // what
 
     public User(String name, String password, String email, String role) {
         this.name = name;

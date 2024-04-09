@@ -21,6 +21,8 @@ import com.example.demo.models.UserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.models.ItineraryRepository;
 import com.example.demo.models.Itinerary;
+import java.util.Optional;
+
 
 @Controller
 public class UserController {
@@ -62,6 +64,7 @@ public class UserController {
     {
         return "login";
     }
+    
 
 @GetMapping("user-page")
 public String userPage (Model model, Principal principal) { //@RequestParam(name = "uid") int uid,
@@ -107,5 +110,24 @@ public String deleteItinerary(@RequestBody DeleteRequestDto deleteRequestDto) {
     }
 }
 
+@GetMapping("edit-user")
+   public String editUserPage(Model model, Principal principal) {
+
+    User user = userRepo.findByEmail(principal.getName());
+     if(user != null){  
+            model.addAttribute("user", user);
+            return "updateUserForm";
+    
+     }
+        else{
+            return "error"; //error page TBD
+        }
+    }
+
+@PostMapping("/update")
+public String update(@ModelAttribute("user") UserDto userDto) {
+    userService.updateUser(userDto);
+    return "redirect:/edit-user";
+}
 
 }
