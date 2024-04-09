@@ -153,8 +153,7 @@
                 <button class="btn" onclick="copyToClipboard(event)">Copy</button>
             </td>
             <td>
-                <pre id='itinID' th:text="${it.uid}" style="display: none;"></pre>
-                <button class="btn" onclick="confirmDelete(document.getElementById('itinID').innerHTML)">Delete</button>
+                <button class="btn" th:onclick="'confirmDelete(\'' + ${it.uid} + '\')'">Delete</button>
             </td>
         </tr>
     </table>

@@ -21,7 +21,6 @@ import com.example.demo.models.UserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.models.ItineraryRepository;
 import com.example.demo.models.Itinerary;
-import java.util.Optional;
 
 
 @Controller
@@ -129,5 +128,6 @@ public String update(@ModelAttribute("user") UserDto userDto) {
     userService.updateUser(userDto);
     return "redirect:/edit-user";
 }
+
 
 }
