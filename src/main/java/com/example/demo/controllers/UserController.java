@@ -7,20 +7,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import com.example.demo.dto.DeleteRequestDto;
 import com.example.demo.dto.UserDto;
 import com.example.demo.models.User;
 import com.example.demo.models.UserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.models.ItineraryRepository;
 import com.example.demo.models.Itinerary;
-
-
-
-
-
 
 @Controller
 public class UserController {
@@ -75,23 +75,37 @@ public String userPage (Model model, Principal principal) { //@RequestParam(name
 }
 
 
-	@GetMapping("admin-page")
-	public String adminPage (Model model, Principal principal) {
-		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
-		model.addAttribute("user", userDetails);
+@GetMapping("admin-page")
+public String adminPage(Model model, Principal principal) {
+    UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+    model.addAttribute("user", userDetails);
 
-        List<User> users = userRepo.findAll();
-        model.addAttribute("users", users);
+    List<User> users = userRepo.findAll();
+    model.addAttribute("users", users);
 
-        
-        List<Itinerary> itineraries = itineraryRepo.findAllByEmail(principal.getName());
-        model.addAttribute("itinerary", itineraries);
+    List<Itinerary> itineraries = itineraryRepo.findAllByEmail(principal.getName());
+    model.addAttribute("itinerary", itineraries);
 
-		return "admin";
-	}
-    
-   
-        
-    
+    return "admin";
+}
+
+@PostMapping("/delete-itinerary")
+@ResponseBody
+public String deleteItinerary(@RequestBody DeleteRequestDto deleteRequestDto) {
+    try {
+        // Retrieve the itinerary ID from the sharing request
+        Integer itineraryId = deleteRequestDto.getItineraryId();
+
+        // Perform deletion based on the itinerary ID
+        itineraryRepo.deleteById(itineraryId);
+
+        // Return success message
+        return "Itinerary deleted successfully!";
+    } catch (Exception e) {
+        // Return error message if deletion fails
+        return "Failed to delete the itinerary. Error: " + e.getMessage();
+    }
+}
+
 
 }

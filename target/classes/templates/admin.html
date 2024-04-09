@@ -160,7 +160,14 @@
         </tr>
         <tr th:each="it, stat : ${itinerary}">
             <td><pre th:text="${stat.index + 1}"></pre></td>
-            <td><pre th:text="${it.itinerary}"></pre></td>
+            <td>
+                <pre class="itinerary-content" th:text="${it.itinerary}"></pre> <!-- Added a class for easier selection -->
+                <button class="btn" onclick="copyToClipboard(event)">Copy</button> <!-- Added a button for copying -->
+            </td>
+            <td>
+                <pre id='itinID' th:text="${it.uid}" style="display: none;"></pre>
+                <button class="btn" onclick="confirmDelete(document.getElementById('itinID').innerHTML)">Delete</button>
+            </td>
         </tr>
     </table>
 </div>
@@ -170,6 +177,69 @@
     sessionStorage.setItem('userRole', userRole);
 </script>
 
+<script>
+    function confirmDelete(itineraryId) {
+        var confirmDelete = confirm("Are you sure you want to delete this itinerary?");
+        if (confirmDelete) {
+            // Call a function to delete the itinerary
+            deleteItinerary(itineraryId);
+        }
+    }
+
+    function deleteItinerary(itineraryId) {
+        // Send an AJAX request to the server to delete the itinerary
+        // You'll need to implement the server-side logic to delete the itinerary
+        // Example:
+        fetch('/delete-itinerary', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                itineraryId: itineraryId
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Reload the page or update the itinerary list after deletion
+                window.location.reload(); // Reload the page for demonstration purposes
+            } else {
+                alert('Failed to delete the itinerary. Please try again later.');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting itinerary:', error);
+            alert('Failed to delete the itinerary. Please try again later.');
+        });
+    }
+
+</script>
+
+<script>
+    function copyToClipboard(event) {
+        // Get the text content of the nearest '.itinerary-content' element
+        var itineraryContent = event.target.closest('td').querySelector('.itinerary-content').innerText;
+
+        // Create a temporary textarea element
+        var tempTextarea = document.createElement('textarea');
+        tempTextarea.value = itineraryContent;
+
+        // Append the textarea to the document body
+        document.body.appendChild(tempTextarea);
+
+        // Select the text within the textarea
+        tempTextarea.select();
+
+        // Execute the copy command
+        document.execCommand('copy');
+
+        // Remove the temporary textarea
+        document.body.removeChild(tempTextarea);
+
+        // Alert the user
+        alert('Itinerary copied to clipboard!');
+    }
+</script>
 
     
 </body>
