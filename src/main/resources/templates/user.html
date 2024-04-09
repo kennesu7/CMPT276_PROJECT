@@ -147,8 +147,10 @@
         <tr th:each="it, stat : ${itinerary}">
             <td><pre th:text="${stat.index + 1}"></pre></td>
             <td>
-                <pre class="itinerary-content" th:text="${it.itinerary}"></pre> <!-- Added a class for easier selection -->
-                <button class="btn" onclick="copyToClipboard(event)">Copy</button> <!-- Added a button for copying -->
+                <div class="itinerary-content" style="max-width: 600px; overflow: auto; word-wrap: break-word;">
+                    <pre th:text="${it.itinerary}"></pre>
+                </div>
+                <button class="btn" onclick="copyToClipboard(event)">Copy</button>
             </td>
             <td>
                 <pre id='itinID' th:text="${it.uid}" style="display: none;"></pre>
