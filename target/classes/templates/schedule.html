@@ -64,7 +64,18 @@
 	border-radius: 4px;
 	}
 
-	
+	.checkbox-container {
+    display: flex;
+    /* margin-right: 20px; Adjust as needed */
+	align-items: center;
+	padding: 10px;
+}
+
+.checkbox-container label {
+    width: 100px; /* Adjust width as needed */
+    margin-right: 10px; /* Add space between label and checkbox */
+}
+
 </style>
 
 <body>
@@ -78,17 +89,29 @@
 					<div class="form-group">
 						<input type="text" name="city" id="capital_city" placeholder="Enter a city" th:value="${request}" required autofocus/>
 					</div>
-					<div>
-						<input type="checkbox" id="sports" name="genres" value="sports">
+					<div class="checkbox-container">
 						<label for="sports">Sports</label>
+						<input type="checkbox" id="sports" name="genres" value="sports"> 
 					</div>
-					<div>
-						<input type="checkbox" id="music" name="genres" value="music">
+					<div class="checkbox-container">
 						<label for="music">Music</label>
+						<input type="checkbox" id="music" name="genres" value="music">
 					</div>
-					<div>
-						<input type="checkbox" id="culture" name="genres" value="culture">
+					<div class="checkbox-container">
 						<label for="culture">Culture</label>
+						<input type="checkbox" id="culture" name="genres" value="culture">
+					</div>
+					<div class="checkbox-container">
+						<label for="nature">Nature</label>
+						<input type="checkbox" id="nature" name="genres" value="nature">
+					</div>
+					<div class="checkbox-container">
+						<label for="adventure">Adventure</label>
+						<input type="checkbox" id="adventure" name="genres" value="adventure">
+					</div>
+					<div class="checkbox-container">
+						<label for="nightlife">Nightlife</label>
+						<input type="checkbox" id="nightlife" name="genres" value="nightlife">
 					</div>
 					<!-- Add additional checkboxes for other genres as needed -->
 					<div class="row">

@@ -34,9 +34,6 @@ import com.example.demo.models.UserRepository;
 import com.example.demo.service.WeatherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @Controller
 public class ChatGptController {
