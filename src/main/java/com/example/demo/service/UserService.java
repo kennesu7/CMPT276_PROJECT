@@ -7,6 +7,5 @@ public interface UserService {
 
     User save (UserDto userDto);
     User updateUser (UserDto userDto);
-
-    
+    void deleteByEmail(String email);
 } 
