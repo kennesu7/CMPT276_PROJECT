@@ -78,7 +78,7 @@ public class ChatGptController {
 			User user = UserRepository.findByEmail(userEmail);
 			String email = UserRepository.findByEmail(userEmail).getEmail();
 			String city = dto.city().trim().replaceAll(",+$", ""); // Remove any trailing commas
-			List<String> genres = dto.genre(); // Get the genres list
+			List<String> genre = dto.genres(); // Get the genres list
 			
 			Optional<String> weatherDataOptional = weatherService.getWeather(city);
         	String weatherData = "Weather data not available";
@@ -96,7 +96,7 @@ public class ChatGptController {
 			
 			if(weatherData != null){
 				//include the weather data in the message
-				String message = buildMessage(city, genres, weatherData);
+				String message = buildMessage(city, genre, weatherData);
 				String generatedItinerary = chatWithGpt3(message);
 				ArrayList<String> city_list=extractPlaceNames(generatedItinerary);
 				
@@ -119,8 +119,8 @@ public class ChatGptController {
 	}
 
 
-	private String buildMessage(String city, List<String> genres, String weatherData) {
-		String interest = (genres != null && !genres.isEmpty()) ? "I am interested in " + String.join(", ", genres) : "";
+	private String buildMessage(String city, List<String> genre, String weatherData) {
+		String interest = (genre != null && !genre.isEmpty()) ? "I am interested in " + String.join(", ", genre) : "";
 		city = city != null ? city.trim().replaceAll(",$", "") : "";
 		return String.format("%s, %s, Weather condition is: %s", city, interest, weatherData).trim();
 	}

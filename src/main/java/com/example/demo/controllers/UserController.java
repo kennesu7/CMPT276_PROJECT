@@ -136,7 +136,7 @@ public String deleteItinerary(@RequestBody DeleteRequestDto deleteRequestDto) {
     public void deleteUser(Principal principal) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
         System.out.println("User ID: " + userDetails.getUsername());
-        userService.deleteByEmail(userDetails.getUsername());   
+        userService.deleteByEmail(userDetails.getUsername());
     }
 
 @PostMapping("/update")
